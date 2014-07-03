@@ -3,9 +3,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 public class Client implements Runnable{
 	private String[] SlaveName = {"WorkStationII","WorkStationIII","WorkStationIV","WorkStationV"};
-    private int[] SlaveNumber = {7,7,7,7};
+    	private int[] SlaveNumber = {7,7,7,7};
 	private static String CurrentPath = System.getProperty("user.dir");
-    public static void main(String[] args) throws Exception {
+    	public static void main(String[] args) throws Exception {
 		int MasterNumber = 8;	
 		(new Thread(new SendClient())).start();
 		ServerSocket servsock = new ServerSocket(MasterNumber);
