@@ -1,14 +1,20 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.*;
-
+import java.util.Scanner;
 public class Server implements Runnable{
 	private static boolean busy = false;
-	private static String MasterName = "like";
+	private static String MasterName;
+	private static String FEBioPath;
 	private int MasterNumber = 8;
 	private String CurrentPath = System.getProperty("user.dir");
 	private static String FileName = null;
 	public static void main(String[] args) throws IOException {
+		Scanner in = new Scanner(System.in);
+		System.out.println("Please enter the name of default client:");
+		MasterName = in.next();
+		System.out.println("Please enter the FEBio path:");
+		FEBioPath = in.next();
 		int SlaveNumber = 7;
 		ServerSocket servsock = new ServerSocket(SlaveNumber);
 		while (true) {
@@ -39,7 +45,7 @@ public class Server implements Runnable{
 				os.close();
 				sock.close();
 				busy = true;
-				(new Thread(new ReceiveServer())).start();
+				(new Thread(new Server())).start();
 				System.out.println("Master name: "+MasterName);
 			} else {
 				byte[] Message = {127,127,0,0};
@@ -58,7 +64,7 @@ public class Server implements Runnable{
 			Process task = null;
 			try {
 				System.out.println("FileName: "+FileName);
-				task = rn.exec("cmd /c start C:\\Progra~1\\FEBio1p8\\febio.exe -i "+FileName);
+				task = rn.exec("cmd /c start "+FEBioPath+"\\febio.exe -i "+FileName);
 				System.out.println("Working...");
 			} catch (Exception e) {
 				System.out.println("Error exec!");
@@ -71,7 +77,7 @@ public class Server implements Runnable{
 			}
 			System.out.println("Work Finished");
 			myFile.delete();
-			deleteFile(FileName.replaceAll(".feb",".xplt"));
+			SendResult(FileName.replaceAll(".feb",".xplt"),MasterName,MasterNumber);
 			SendResult(FileName.replaceAll(".feb",".log"),MasterName,MasterNumber);
 		} else {
 			System.out.println("No .feb file received");
@@ -146,27 +152,6 @@ public class Server implements Runnable{
 		}  
 		return flag;  
 	}
-	private static void ReplaceStringInFile(File inFile, int lineno, String lineToBeInserted) throws Exception {
-        File outFile = new File("$$$$$$$$$$$$$$.tmp");
-        FileInputStream fis  = new FileInputStream(inFile);
-        BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-        FileOutputStream fos = new FileOutputStream(outFile);
-        PrintWriter out = new PrintWriter(fos);
-        String thisLine = "";
-        int i =1;
-        while ((thisLine = in.readLine()) != null) {
-			if(i == lineno) out.println(lineToBeInserted);
-			else out.println(thisLine);
-			i++;
-		}
-		out.flush();
-		out.close();
-		in.close();
-		fis.close();
-		fos.close();
-		inFile.delete();
-		outFile.renameTo(inFile);
-	}	
 }
 
 
