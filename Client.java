@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.Scanner;
 public class Client implements Runnable{
 	private static String[] SlaveName = null;
-	 private static int[] SlaveNumber = null;
+	private static int[] SlaveNumber = null;
 	private static String CurrentPath = System.getProperty("user.dir");
     	public static void main(String[] args) throws Exception {
 		int PCnum = 1;
