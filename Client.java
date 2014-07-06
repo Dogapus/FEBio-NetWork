@@ -1,13 +1,25 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 public class Client implements Runnable{
-	private String[] SlaveName = {"WorkStationII","WorkStationIII","WorkStationIV","WorkStationV"};
-    	private int[] SlaveNumber = {7,7,7,7};
+	private static String[] SlaveName = null;
+	 private static int[] SlaveNumber = null;
 	private static String CurrentPath = System.getProperty("user.dir");
     	public static void main(String[] args) throws Exception {
+		int PCnum = 1;
+		Scanner in = new Scanner(System.in);
+		System.out.println("Please enter the number of workstations:");
+		PCnum = in.nextInt();
+		SlaveName = new String[PCnum];
+		SlaveNumber = new int[PCnum];
+		for(int i=0;i<PCnum;i++) {
+			System.out.println("Please enter the name of workstation "+(i+1)+":");
+			SlaveName[i] = in.next();
+			SlaveNumber[i] = 7;
+		}
 		int MasterNumber = 8;	
-		(new Thread(new SendClient())).start();
+		(new Thread(new Client())).start();
 		ServerSocket servsock = new ServerSocket(MasterNumber);
 		while (true) {
 			Socket sock = servsock.accept();
